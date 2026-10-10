@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StandbyCleaner · 更新源</title>
+<style>
+  :root {
+    --bg-top: #101419;
+    --bg-bottom: #0A0D12;
+    --card: #151A22;
+    --border: #1E2530;
+    --text: #E9EEF7;
+    --text-sub: #A7B3C6;
+    --text-dim: #6B7789;
+    --accent: #4C7DF0;
+    --accent-2: #3EC6E8;
+    --ok: #39D188;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+    color: var(--text);
+    font-family: "Microsoft YaHei UI", "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 34px 30px 28px;
+    box-shadow: 0 18px 46px rgba(3, 6, 13, .55);
+  }
+  h1 { margin: 0; font-size: 21px; font-weight: 600; letter-spacing: .2px; }
+  .sub {
+    margin: 7px 0 24px;
+    font-size: 12px;
+    letter-spacing: 1.4px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .ver {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 15px 17px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, rgba(76,125,240,.16), rgba(62,198,232,.10));
+    border: 1px solid rgba(76,125,240,.28);
+  }
+  .ver b {
+    font-size: 25px;
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .ver span { font-size: 12px; color: var(--text-sub); }
+  h2 {
+    margin: 26px 0 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-sub);
+  }
+  ul { margin: 0; padding-left: 19px; }
+  li { margin: 7px 0; font-size: 13.5px; line-height: 1.65; color: var(--text-sub); }
+  .meta {
+    margin-top: 22px;
+    padding-top: 17px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.9;
+  }
+  code {
+    font-family: Consolas, "Cascadia Mono", monospace;
+    font-size: 12px;
+    color: var(--accent-2);
+    background: rgba(62,198,232,.09);
+    padding: 1px 6px;
+    border-radius: 5px;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .badge {
+    display: inline-block;
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ok);
+    border: 1px solid rgba(57,209,136,.34);
+    border-radius: 999px;
+    padding: 3px 10px;
+  }
+  .row { display: flex; align-items: center; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <div class="row">
+      <div>
+        <h1>StandbyCleaner</h1>
+        <p class="sub">Windows 待机列表清理工具 · 更新源</p>
+      </div>
+      <span class="badge">清单在线</span>
+    </div>
+
+    <div class="ver">
+      <b id="version">载入中</b>
+      <span id="published"></span>
+    </div>
+
+    <h2>本次更新内容</h2>
+    <ul id="notes"><li>正在读取 update.json…</li></ul>
+
+    <div class="meta">
+      客户端清单地址 <code>update.json</code><br>
+      本页只用来确认清单是否可访问，程序不依赖它。<br>
+      <span id="status"></span>
+    </div>
+  </main>
+
+  <script>
+    // 直接用相对路径读同一目录下的清单，一来页面本身就是探针，
+    // 二来能看到客户端拿到的原文
+    fetch("update.json", { cache: "no-store" })
+      .then(function (r) {
+        if (!r.ok) throw new Error("HTTP " + r.status);
+        return r.json();
+      })
+      .then(function (m) {
+        document.getElementById("version").textContent = "v" + m.version;
+        document.getElementById("published").textContent =
+          m.publishedAt ? m.publishedAt + " 发布" : "";
+        var notes = m.notes || [];
+        if (typeof notes === "string") notes = notes.split("\n");
+        document.getElementById("notes").innerHTML = notes.length
+          ? notes.map(function (n) { return "<li></li>" }).join("")
+          : "<li>本版未提供更新日志。</li>";
+        var lis = document.querySelectorAll("#notes li");
+        notes.forEach(function (n, i) { if (lis[i]) lis[i].textContent = n; });
+        document.getElementById("status").textContent =
+          "清单可访问，字段解析正常。";
+      })
+      .catch(function (e) {
+        document.getElementById("notes").innerHTML =
+          "<li>读不到清单：" + e.message + "</li>";
+        document.getElementById("status").textContent =
+          "清单不可访问，客户端也会拿到同样的失败。";
+      });
+  </script>
+</body>
+</html>
