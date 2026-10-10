@@ -1,5 +1,5 @@
 {
-  "version": "1.2.2",
+  "version": "1.2.1",
   "downloadUrl": "https://lz.qaiu.top/parser?url=https://wwbdq.lanzouq.com/inoQh4bfolmd&pwd=2k44",
   "notes": [
     "新增在线更新：启动时自动检查新版本，弹窗展示更新内容与版本变化。",
