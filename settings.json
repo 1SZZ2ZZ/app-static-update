@@ -1,0 +1,14 @@
+{
+  "auto_interval_enabled": false,
+  "auto_interval_min": 30,
+  "auto_threshold_enabled": false,
+  "auto_threshold_pct": 85,
+  "launch_at_startup": false,
+  "warn_enabled": true,
+  "warn_threshold_pct": 88,
+  "tray_enabled": true,
+  "hotkey_enabled": true,
+  "hotkey": "Ctrl+Alt+M",
+  "check_update_on_start": true,
+  "update_url": ""
+}
